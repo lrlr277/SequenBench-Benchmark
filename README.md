@@ -141,10 +141,44 @@ python metrics.py
 
 All open-source models, models, and human test results are placed in the **_(results)_**:
 
+### Main Experiment
+The experimental data presented in Tables 2 and 3 were all collected from the main experiment：
+
+ **1** The test results of the main experiment for the open-source are stored in the **_(results/base)_**
+
 ```
-python metrics.py
+deepseek.jsonl
+intern_14b.jsonl
+intern_38b.jsonl
+intern_8b.jsonl
+janus.jsonl
+llama.jsonl
+llava.jsonl
+minicpm.jsonl
+mplug.jsonl
+phi.jsonl
+qwen_27b.jsonl
+qwen_9b.jsonl
+```
+**2** The test results of the main experiment for the closed-source are stored in the **_(results/close)_**
+
+```
+gemini_0shot.jsonl
+gemini_1shot.jsonl
+gemini_2shot.jsonl
+gemini_3shot.jsonl
+gpt5_0shot.jsonl
+gpt5_1shot.jsonl
+gpt5_2shot.jsonl
+gpt5_3shot.jsonl
 ```
 
-## 4 License
+### Circular Experiment
+To verify whether the model truly understands the sorting problem, we designed a cyclic validation experiment, and the experimental results are located in the **_(results/circular)_** folder，The experimental results are stored in the **_(results/circular/base)_** folder, with the results of open-source models placed in the /base subfolder and those of closed-source models placed in the **_(results/circular/close)_** folder
+
+### Error
+We have selected two models, qwen and gemini, for error analysis, and the relevant error cases are placed in the **_(results/bad_case)_** folder
+
+## 5 License
 
 This project is licensed under the [Apache-2.0 License](LICENSE).
