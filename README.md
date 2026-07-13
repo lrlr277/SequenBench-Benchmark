@@ -134,7 +134,7 @@ purchased on the [official website](https://openai.com/).
 
 ### Evaluation
 
-You can process the results of model inference through the code we provide to calculate overall accuracy,the accuracy of
+<br>You can process the results of model inference through the code we provide to calculate overall accuracy,the accuracy of
 each physical quantity category, overall P, R, F1 indicators,. We integrate the calculation process into the Python
 files in the directory **_(Code/evaluation)_**:
 
@@ -144,10 +144,10 @@ python metrics.py
 
 ## 4 Results
 
-All open-source models, models, and human test results are placed in the **_(results)_**:
+<br>All open-source models, models, and human test results are placed in the **_(results)_**:
 
 ### Main Experiment
-The experimental data presented in Tables 2 and 3 were all collected from the main experiment：
+<br>The experimental data presented in Tables 2 and 3 were all collected from the main experiment：
 
  **1** The test results of the main experiment for the open-source are stored in the **_(results/base)_**
 
@@ -179,28 +179,28 @@ gpt5_3shot.jsonl
 ```
 
 ### Circular Experiment
-To verify whether the model truly understands the sorting problem, we designed a cyclic validation experiment, and the experimental results are located in the **_(results/circular)_** folder，The experimental results are stored in the **_(results/circular/base)_** folder, with the results of open-source models placed in the /base subfolder and those of closed-source models placed in the **_(results/circular/close)_** folder
+<br>To verify whether the model truly understands the sorting problem, we designed a cyclic validation experiment, and the experimental results are located in the **_(results/circular)_** folder，The experimental results are stored in the **_(results/circular/base)_** folder, with the results of open-source models placed in the /base subfolder and those of closed-source models placed in the **_(results/circular/close)_** folder
 
 ### Error
-We have selected two models, qwen and gemini, for error analysis, and the relevant error cases are placed in the **_(results/bad_case)_** folder
+<br>We have selected two models, qwen and gemini, for error analysis, and the relevant error cases are placed in the **_(results/bad_case)_** folder
 
 ## 5 Appendix
-We have placed cases of different types of problems, model hyperparameters, and model prompts in a PDF file located in the **_(appenix)_** folder
+<br>We have placed cases of different types of problems, model hyperparameters, and model prompts in a PDF file located in the **_(appenix)_** folder
 ### case
-In Section 3.2, we predefine four question types for  the convenience of annotation, with an example of each type provided in Figure 5.For details, see the file  **_(appenix)_**:
+<br>In Section 3.2, we predefine four question types for  the convenience of annotation, with an example of each type provided in Figure 5.For details, see the file  **_(appenix)_**:
 ```
 appendix.pdf
 ```
 ### hyperparameters
-The parameter settings of the open-source MLLMs used in Table 3 are provided in Table 7.For details, see the file  **_(appenix)_**:
+<br>The parameter settings of the open-source MLLMs used in Table 3 are provided in Table 7.For details, see the file  **_(appenix)_**:
 ```
 appendix.pdf
 ```
 ### prompt
-In addition, the task prompts used for the MLLMs are listed in Table 8.For details, see the file  **_(appenix)_**:
+<br>In addition, the task prompts used for the MLLMs are listed in Table 8.For details, see the file  **_(appenix)_**:
 ```
 appendix.pdf
 ```
 ## 6 License
 
-This project is licensed under the [Apache-2.0 License](LICENSE).
+<br>This project is licensed under the [Apache-2.0 License](LICENSE).
