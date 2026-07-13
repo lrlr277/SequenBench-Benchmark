@@ -137,6 +137,14 @@ files in the directory **_(Code/evaluation)_**:
 python metrics.py
 ```
 
+## 4 Results
+
+All open-source models, models, and human test results are placed in the **_(results)_**:
+
+```
+python metrics.py
+```
+
 ## 4 License
 
 This project is licensed under the [Apache-2.0 License](LICENSE).
