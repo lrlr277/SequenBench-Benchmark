@@ -32,13 +32,13 @@
 7261 multiple-choice questions
 
 ## 2 Access SequenBench
-<br>All the  questions,options and answers are in the directory **_(Dataset/dataset)_**.
+<br>All the  questions,options and answers are in the directory **_(Dataset)_**.
 <br>All the  images are in the directory **_(Images/)_**.
 
 ### Data Split
-As reported in the folloeing table, SequenBench contains 7261 samples, divided into training,  test sets
-according to a 7:3 ratio.
-<br>All the splited data sets are in the directory **_(Dataset/dataset)_**.
+As reported in the folloeing table, SequenBench contains 7261 samples, divided into training,dev sets, test sets
+according to a 7:1:2 ratio.
+<br>All the splited data sets are in the directory **_(Dataset)_**.
 
 ### Data Format
 
@@ -93,28 +93,27 @@ options.
 
 ### Experiment
 
-We have disclosed the inference code for the model in the directory **_(Code/experiment)_**, as well as the fine-tuning
-code in the directory **_(Code/finetune)_**.
+We have disclosed the inference code for the model in the directory **_(Code)_**, as well as the fine-tuning
+code in the directory **_(Code/open_models/finetune)_**.
 <br>
 
-- For all 10 open-sourse MLLMs, you can execute Python files in the directory **_(Code/inference)_** 
+- For all 9 open-sourse MLLMs, you can execute Python files in the directory **_(Code/open_models/inference)_** 
 
 ```
-nohup python DeepSeek-VL/deepseek.py
-nohup python intern3_5_3.py
-nohup python instructblip.py
-nohup python Janus/Janus.py
+nohup python deepseek.py
+nohup python intern.py
+nohup python Janus.py
 nohup python llama.py
 nohup python llava.py
 nohup python minicpm.py
 nohup python mplug.py
 nohup python Phi.py
-nohup python qwen3.py
+nohup python qwen.py
 ```
 
 
 
-- For gemini-3-pro and gpt-5, you can directly execute our Python file in the directory **_(Code/close_inference)_** to
+- For gemini3.5-flash and gpt-5.5, you can directly execute our Python file in the directory **_(Code/close_models)_** to
   perform inferencing of the zero-shot, few-shot, provided that you prepare a key:
 
 ```
@@ -122,7 +121,7 @@ python gemini.py
 python gpt5.py
 ```
 
-Gemini-3-pro needs to apply on the [official website](https://aistudio.google.com/app/apikey), and GPT-5 needs to be
+gemini3.5-flash needs to apply on the [official website](https://aistudio.google.com/app/apikey), and GPT-5.5 needs to be
 purchased on the [official website](https://openai.com/).
 
 ### Evaluation
@@ -132,7 +131,7 @@ each physical quantity category, overall P, R, F1 indicators,. We integrate the 
 files in the directory **_(Code/evaluation)_**:
 
 ```
-python merge_main.py
+python metrics.py
 ```
 
 ## 4 License
