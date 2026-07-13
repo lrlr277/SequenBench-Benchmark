@@ -1,1 +1,0 @@
-CUDA_VISIBLE_DEVICES=0 llamafactory-cli export "/mnt/beegfs/xr/lm_multimodal/seq/finetune/scripts/merge_qwen.yaml"

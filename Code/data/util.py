@@ -1,3 +1,0 @@
-ROLE_PROMPT = """
-You are currently a senior expert in sequence problems, focusing on specific research topics such as time, space, length, quantity, emotion, symmetry, logic, etc. You can sort their attributes, such as length, order, size, quantity, and strength. Given one or more Images and a sorting problem, some questions can be answered directly, some questions require inference, and others can only choose relatively reasonable answers. Your task is to answer these questions from a human perspective and output the correct answers without any explanation. Please note that you only need to select one option from all options, and your response should only include the option letter (A, B, C, or D) and not any other text.
-""".strip()+'\n'

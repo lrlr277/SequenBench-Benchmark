@@ -3,24 +3,25 @@ import os
 import json
 import re
 import string
-# INFERENCE_MODE = "base"
-# INFERENCE_MODE = "ft"
-# INFERENCE_MODE = "close"
-# INFERENCE_MODE = "other"
-# INFERENCE_MODE = "test"
-# INFERENCE_MODE = "cot_base"
-INFERENCE_MODE = "cot_ft"
-INFERENCE_DIR = f"/mnt/beegfs/xr/lm_multimodal/seq/model_output/{INFERENCE_MODE}"
-ORDER_PATH = f"/mnt/beegfs/xr/lm_multimodal/seq/evaluation/model_order/model_order_{INFERENCE_MODE}.txt"
-# ORDER_PATH = f"/mnt/beegfs/xr/lm_multimodal/seq/evaluation/model_order/model_order_size_{INFERENCE_MODE}.txt"
-DST_PATH = f"/mnt/beegfs/xr/lm_multimodal/seq/evaluation/output/{INFERENCE_MODE}.json"
+
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--mode", type=str, required=True)
+parser.add_argument("--save_judge", action="store_true", default=False)
+args = parser.parse_args()
+
+INFERENCE_MODE = args.mode
+safe_mode = INFERENCE_MODE.replace("\\", "_")
+INFERENCE_DIR = "xxx"
+ORDER_PATH = "xxx"
+DST_PATH = rf"xxx"
 
 def read_jsonl(file_path):
     data = []
     with jsonlines.open(file_path) as reader:
         for obj in reader:
             data.append(obj)
-    # print(len(data), data[0].keys())
     return data
 
 def to_jsonl(data, file_path):
@@ -28,87 +29,86 @@ def to_jsonl(data, file_path):
         writer.write_all(data)
 
 def is_answer(s):
-    patterns1 = ['a', 'b', 'c', 'd']
-    patterns2 = ['a.', 'b.', 'c.', 'd.']
-    for pattern in patterns1:
+    patterns = {chr(ord('a')+i): [chr(ord('A')+i), chr(ord('a')+i)] for i in range(4)}
+    for pattern in patterns:
         if s == pattern: return True
-    if len(s) < 15:
-        for pattern in patterns2:
-            # if s == 'a. left':
-            # print(s.startswith(pattern), pattern)
-            if s.startswith(pattern): return True
     return False
 
-def match_pattern(pred, options):
-    labels = [o.split('.')[0].strip() for o in options]
-    texts = [o.split('.')[-1].strip() for o in options]
-    option_patterns = {chr(ord('a')+i): [options[i], texts[i], ','.join(texts[i]), '<'.join(texts[i]), '>'.join(texts[i])] for i in range(4)}
+def match_pattern(pred):
+    option_patterns = {chr(ord('A')+i): [chr(ord('A')+i)] for i in range(4)}
     for key in option_patterns:
         for op in option_patterns[key]:
             if op in pred:
                 return key
-    try:
-        if pred[1] == '.' and pred[0] in option_patterns.keys():
-            return pred[0]
-    except:
-        return None
     return None
 
-def parse_pred(d):
-    pattern = re.compile(f'\s?([{re.escape(string.punctuation)}])\s?')
+def is_valid_simple(s, pattern_str):
+    simple_pattern = re.compile(pattern_str, re.IGNORECASE | re.DOTALL)
+    matches = simple_pattern.findall(s)
+    if len(matches) == 1:
+        return matches[0]
+    else:
+        return None
 
-    options = d['options']
-    lower_options = [pattern.sub(r'\1', o.lower()) for o in options]
-    raw_pred = d['pred'].lower().split('\n\n')[-1].strip()
-    pred = pattern.sub(r'\1', raw_pred)
+def parse_pred(d):
+    pred = d['pred'].split('\n\n')[-1].strip()
+    char2label = {o.split('.')[0].strip().lower(): o.split('.')[-1].strip().lower() for o in d['options']}
+    char2option = {o.split('.')[0].strip().lower(): o.lower() for o in d['options']}
+    raw_patterns = ["{char}", "**{char}**", "({char})", "**({char})**", "option {char}", "**option {char}**"]
+    patterns2label = {}
+    pattern_list = []
+    for i in range(4):
+        lower_char = chr(ord('a') + i)
+        for raw_pattern in raw_patterns:
+            pattern = raw_pattern.format(char=lower_char)
+            patterns2label[pattern] = lower_char
+            pattern_list.append(pattern)
+            pattern = raw_pattern.format(char=char2label[lower_char])
+            patterns2label[pattern] = lower_char
+            pattern_list.append(pattern)
+            pattern = raw_pattern.format(char=char2option[lower_char])
+            patterns2label[pattern] = lower_char
+            pattern_list.append(pattern)
+    pattern_str = "|".join(re.escape(c) for c in pattern_list)
+    bounded_pattern_str = "|".join(f"(?<!\\w){re.escape(c)}(?!\\w)" for c in pattern_list)
 
     answer_patterns = [
-        "**answer**:",
-        "**answer**",
-        "*answer*:",
-        "**answer:**",
-        "answer is:",
-        "answer is",
-        "answer:",
-        "correct sequence is:",
-        "correct sequence is",
+        re.compile(rf'^({pattern_str})$', re.IGNORECASE | re.DOTALL),
+        re.compile(rf'.* is:?\s*({pattern_str})', re.IGNORECASE | re.DOTALL),
+        re.compile(rf'.* is option?\s*({pattern_str})', re.IGNORECASE | re.DOTALL),
+        re.compile(rf'.*answer:?\s*({pattern_str})', re.IGNORECASE | re.DOTALL),
+        re.compile(rf'.*answer\*\*:?\s*({pattern_str})', re.IGNORECASE | re.DOTALL),
+        re.compile(rf'.*output:?\s*({pattern_str})', re.IGNORECASE | re.DOTALL),
+        re.compile(rf'.*output\*\*:?\s*({pattern_str})', re.IGNORECASE | re.DOTALL),
+        re.compile(rf'.*({pattern_str}) is the correct', re.IGNORECASE | re.DOTALL),
+        re.compile(rf'.*:\s*({pattern_str})\.', re.IGNORECASE | re.DOTALL),
     ]
+
     for answer_pattern in answer_patterns:
-        if answer_pattern in pred:
-            pred = pred.split(answer_pattern)[-1].strip()
-    re_answer_patterns = [r'.* is:?[\s\n]*((a|b|c|d)\..*)', r'.* option:?[\s\n]*((a|b|c|d)\..*)']
-    for re_answer_pattern in re_answer_patterns:
-        match = re.match(re_answer_pattern, pred, re.DOTALL)
+        match = answer_pattern.search(pred)
         if match:
             pred = match.group(1)
 
-    if '\n' in pred:
-        sent_start = pred.split('\n')[0].strip()
-        sent_end = pred.split('\n')[-1].strip()
-        pred = sent_start + '\n' + sent_end
-
-    if is_answer(pred):
-        return pred
-    elif not match_pattern(pred, lower_options):
+    if pred.lower() in patterns2label:
+        return patterns2label[pred.lower()]
+    simple_pred = is_valid_simple(pred, bounded_pattern_str)
+    if simple_pred and simple_pred.lower() in patterns2label:
+        return patterns2label[simple_pred.lower()]
+    else:
         with open('patterns.log', 'a+') as f:
-            f.write(str(lower_options))
-            f.write('\t'+raw_pred+'\n')
-            f.write('\t'+pred+'\n')
+            f.write(pred+'\n')
             f.write('==================='+'\n')
-    return match_pattern(pred, lower_options)
+        return None
 
 
 def judge(data):
     for d in data:
         pred = parse_pred(d)
-        gold = d['gold'].lower()
+        gold = d['answer'].lower()
         if pred: extracted_ans = pred[0]
         else: extracted_ans = ''
         d['extracted_ans'] = extracted_ans
         d['correct'] = 1 if extracted_ans == gold else 0
-
-        # if not d['correct'] and extracted_ans != d['pred'][0].lower():
-        #     print(gold, extracted_ans, d['pred'])
 
 def init_cnt(num_options):
     d = {}
@@ -120,13 +120,13 @@ def cal_prf(inf):
     counter = init_cnt(4)
     for d in inf:
         if not d['extracted_ans']:
-            counter[d['gold'].lower()]['fn'] += 1
+            counter[d['answer'].lower()]['fn'] += 1
         else:
             if d['correct']:
                 counter[d['extracted_ans']]['tp'] += 1
             else:
                 counter[d['extracted_ans']]['fp'] += 1
-                counter[d['gold'].lower()]['fn'] += 1
+                counter[d['answer'].lower()]['fn'] += 1
     def compute_macro_prf(cnt, num_options):
         ps, rs, f1s = [], [], []
         for c in cnt.values():
@@ -155,17 +155,19 @@ def init_cnt_acc(num_options):
 def cal_acc(inf, metrics):
     num_correct = len([d for d in inf if d['correct']])
     metrics['acc'] = num_correct / len(inf)
-    counter = {str(i+1): init_cnt_acc(4) for i in range(9)}
+
+    counter = {}
     for d in inf:
-        entry_type = d['image'][0]
+        entry_type = d['image'].split('-', 1)[0]
+        if entry_type not in counter:
+            counter[entry_type] = init_cnt_acc(4)
         if d['correct']:
-            counter[entry_type][d['gold'].lower()]['correct'] += 1
-        counter[entry_type][d['gold'].lower()]['total'] += 1
+            counter[entry_type][d['answer'].lower()]['correct'] += 1
+        counter[entry_type][d['answer'].lower()]['total'] += 1
     for entry_type in counter:
         counter[entry_type]['acc'] = sum([m['correct'] for m in counter[entry_type].values()]) / sum([m['total'] for m in counter[entry_type].values()])
         for i in range(4):
             counter[entry_type][chr(ord('a') + i)]['acc'] = counter[entry_type][chr(ord('a') + i)]['correct'] / counter[entry_type][chr(ord('a') + i)]['total'] if counter[entry_type][chr(ord('a') + i)]['total'] else 0
-            # counter[entry_type][chr(ord('a') + i)] = counter[entry_type][chr(ord('a') + i)]['correct'] / counter[entry_type][chr(ord('a') + i)]['total']
     metrics['acc_per_type'] = counter
 
 def merge_metrics(dicts, ndigits=2):
@@ -184,11 +186,7 @@ def merge_metrics(dicts, ndigits=2):
 def eval_multirun(model, num_run=3):
     files = sorted(os.listdir(INFERENCE_DIR))
     model_metrics = []
-    with open('patterns.log', 'a+') as f:
-        f.write(model+'\n')
-        f.write('==================='+'\n')
     if num_run == 1:
-        print(f"=========={model}==========")
         try:
             file = f"{model}.jsonl"
             assert file in files
@@ -196,27 +194,31 @@ def eval_multirun(model, num_run=3):
             file = f"{model}_run0.jsonl"
         inf = read_jsonl(os.path.join(INFERENCE_DIR, file))
         judge(inf)
+        if args.save_judge:
+            to_jsonl(inf, os.path.join(INFERENCE_DIR, f"{model}_judge.jsonl"))
         metrics = cal_prf(inf)
         cal_acc(inf, metrics)
         model_metrics.append(metrics)
+        print(f"=========={model}==========")
         return merge_metrics(model_metrics)
     else:
-        print(f"=========={model}==========")
         for idx in range(num_run):
             file = f"{model}_run{idx}.jsonl"
             assert file in files
             inf = read_jsonl(os.path.join(INFERENCE_DIR, file))
             judge(inf)
+            if args.save_judge:
+                to_jsonl(inf, os.path.join(INFERENCE_DIR, f"{model}_judge.jsonl"))
             metrics = cal_prf(inf)
             cal_acc(inf, metrics)
             model_metrics.append(metrics)
+        print(f"=========={model}==========")
         return merge_metrics(model_metrics)
 
 if __name__ == '__main__':
     results = {}
     with open(ORDER_PATH, 'r') as f:
         models = [item.strip() for item in f.readlines() if item]
-    # models = [f.split('.jsonl')[0] for f in os.listdir('/mnt/beegfs/xr/lm_multimodal/seq/model_output/test')]
     for model in models:
         try:
             results[model] = eval_multirun(model)
@@ -224,15 +226,4 @@ if __name__ == '__main__':
             results[model] = eval_multirun(model, 1)
     with open(DST_PATH, 'w') as f:
         json.dump(results, f, indent=2)
-
-    # files = sorted(os.listdir(INFERENCE_DIR))
-    # for file in files:
-    #     # if file == "intern_8b.jsonl": continue
-    #     print("================")
-    #     print(file)
-    #     inf = read_jsonl(os.path.join(INFERENCE_DIR, file))
-    #     judge(inf)
-    #     metrics = cal_prf(inf)
-    #     cal_acc(inf, metrics)
-    #     print(metrics)
-    #     # break
+    print(results)

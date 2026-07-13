@@ -1,0 +1,41 @@
+{
+    "open": [
+        "deepseek",
+        "minicpm",
+        "phi",
+        "janus",
+        "qwen_9b",
+        "intern_8b",
+        "mplug",
+        "llava",
+        "llama"
+    ],
+    "close": [
+        "gpt5_0shot",
+        "gpt5_1shot",
+        "gpt5_2shot",
+        "gpt5_3shot",
+        "gemini_0shot",
+        "gemini_1shot",
+        "gemini_2shot",
+        "gemini_3shot"
+    ],
+    "close_circular": [
+        "gpt5_0shot",
+        "gpt5_3shot",
+        "gemini_0shot",
+        "gemini_3shot"
+    ],
+    "size": [
+        "qwen_9b",
+        "qwen_27b",
+        "intern_8b",
+        "intern_14b",
+        "intern_38b"
+    ],
+    "other": [
+        "random",
+        "human",
+        "human_text"
+    ]
+}
