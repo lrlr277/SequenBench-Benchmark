@@ -91,6 +91,9 @@ options.
 
 ## 3 Experiment and Evaluation
 
+### Prompt
+During testing, the prompt words we input to the large model are stored in the **_(Code/prompt)_** .
+
 ### Experiment
 
 We have disclosed the inference code for the model in the directory **_(Code)_**, as well as the fine-tuning
