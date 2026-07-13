@@ -23,9 +23,14 @@
         - [Data Split](#Data-Split)
         - [Data Format](#Data-Format)
     - [Experiment & Evaluation](#3-Experiment-and-Evaluation)
+        - [Prompt](#Prompt)
         - [Experiment](#Experiment)
         - [Evaluation](#Evaluation)
-    - [License](#4-License)
+    - [Experiment & Evaluation](#4-Results)
+    - [Main Experiment](#Main-Experiment)
+    - [Circular Experiment](#Circular-Experiment)
+    - [Error](#Error)
+    - [License](#5-License)
 
 ## 1 Overview
 **SequenBench**  is a benchmark for testing **the visual ranking ability** of multimodal large language models, consisting of 6761 images and
