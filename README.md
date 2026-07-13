@@ -23,14 +23,17 @@
         - [Data Split](#Data-Split)
         - [Data Format](#Data-Format)
     - [Experiment & Evaluation](#3-Experiment-and-Evaluation)
-        - [Prompt](#Prompt)
         - [Experiment](#Experiment)
         - [Evaluation](#Evaluation)
     - [Experiment & Evaluation](#4-Results)
     - [Main Experiment](#Main-Experiment)
     - [Circular Experiment](#Circular-Experiment)
     - [Error](#Error)
-    - [License](#5-License)
+    - [Appendix](#5-Appendix)
+    - [case](#case)
+    - [hyperparameters](#hyperparameters)
+    - [prompt](#prompt)
+    - [License](#6-License)
 
 ## 1 Overview
 **SequenBench**  is a benchmark for testing **the visual ranking ability** of multimodal large language models, consisting of 6761 images and
@@ -95,9 +98,6 @@ options.
 <br>
 
 ## 3 Experiment and Evaluation
-
-### Prompt
-During testing, the prompt words we input to the large model are stored in the **_(Code/prompt)_** .
 
 ### Experiment
 
@@ -184,6 +184,23 @@ To verify whether the model truly understands the sorting problem, we designed a
 ### Error
 We have selected two models, qwen and gemini, for error analysis, and the relevant error cases are placed in the **_(results/bad_case)_** folder
 
-## 5 License
+## 5 Appendix
+We have placed cases of different types of problems, model hyperparameters, and model prompts in a PDF file located in the **_(appenix)_** folder
+### case
+In Section 3.2, we predefine four question types for  the convenience of annotation, with an example of each type provided in Figure 5.For details, see the file  **_(appenix)_**:
+```
+appendix.pdf
+```
+### hyperparameters
+The parameter settings of the open-source MLLMs used in Table 3 are provided in Table 7.For details, see the file  **_(appenix)_**:
+```
+appendix.pdf
+```
+### prompt
+In addition, the task prompts used for the MLLMs are listed in Table 8.For details, see the file  **_(appenix)_**:
+```
+appendix.pdf
+```
+## 6 License
 
 This project is licensed under the [Apache-2.0 License](LICENSE).
