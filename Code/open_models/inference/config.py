@@ -6,11 +6,11 @@ DATA_DIR = "xxx"
 DATA_PATH = os.path.join(DATA_DIR, "split_v1", "test.jsonl")
 IMAGE_DIR = os.path.join(DATA_DIR, "img")
 RESULT_DIR = {
-    "base": os.path.join(BASE_DIR, "results", "base"),
-    "ft": os.path.join(BASE_DIR, "results", "ft"),
-    "test": os.path.join(BASE_DIR, "results", "test"),
-    "circular_base": os.path.join(BASE_DIR, "results", "circular", "base"),
-    "circular_ft": os.path.join(BASE_DIR, "results", "circular", "ft")
+    "base": os.path.join(BASE_DIR, "Results", "base"),
+    "ft": os.path.join(BASE_DIR, "Results", "ft"),
+    "test": os.path.join(BASE_DIR, "Results", "test"),
+    "circular_base": os.path.join(BASE_DIR, "Results", "circular", "base"),
+    "circular_ft": os.path.join(BASE_DIR, "Results", "circular", "ft")
 }
 ROLE_PROMPT = (
     "You are currently a senior expert in sequence problems, focusing on specific research topics such as time, space, length, quantity, emotion, symmetry, logic, etc. "
