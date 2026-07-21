@@ -187,7 +187,7 @@ gpt5_3shot.jsonl
 ## 5 Appendix
 <br>We have placed cases of different types of problems, model hyperparameters, and model prompts in a PDF file located in the **_(appenix)_** folder
 ### case
-<br>In Section 3.2, we predefine four question types for  the convenience of annotation, with an example of each type provided in Figure 5.For details, see the file  **_(appenix)_**:
+<br>In Section 3.2, we predefine four question types for  the convenience of annotation, with an example of each type provided in Figure 6.For details, see the file  **_(appenix)_**:
 ```
 case&hyperparameters&prompt.pdf
 ```
