@@ -189,17 +189,17 @@ gpt5_3shot.jsonl
 ### case
 <br>In Section 3.2, we predefine four question types for  the convenience of annotation, with an example of each type provided in Figure 5.For details, see the file  **_(appenix)_**:
 ```
-appendix.pdf
+case&hyperparameters&prompt.pdf
 ```
 ### hyperparameters
 <br>The parameter settings of the open-source MLLMs used in Table 3 are provided in Table 7.For details, see the file  **_(appenix)_**:
 ```
-appendix.pdf
+case&hyperparameters&prompt.pdf
 ```
 ### prompt
 <br>In addition, the task prompts used for the MLLMs are listed in Table 8.For details, see the file  **_(appenix)_**:
 ```
-appendix.pdf
+case&hyperparameters&prompt.pdf
 ```
 ## 6 License
 
